@@ -1,7 +1,7 @@
 Kinect2 Socket Client
 ----
 
-a javascript client library that can connect to a kinect2-socket application or load playback files.
+a javascript client library that can connect to a [kinect2-socket](https://github.com/kikko/kinect2-socket) application or load playback files.
 It runs in the browser or with nodejs.
 
 *example/simple.html* :
