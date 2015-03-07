@@ -53,3 +53,7 @@ ks = require('src/kinect2-socket');
 - make sure everything's fine `cake test`
 - start developping with `cake dev`
 - export minified with `cake export`
+
+## Thanks
+
+- most progress on this lib was made during a project with [field.io](http://www.field.io)
