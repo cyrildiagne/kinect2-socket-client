@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>kinect-socket-client simple example</title>
+    <style>
+      html, body { margin :0; padding: 0; width: 100%; height: 100%; }
+      #infos {
+        position:absolute; top: 0px; left : 10px; font-family: sans-serif;
+      }*/
+    </style>
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+    <p id="infos">
+      → Kinect2-socket-client - Simple Example
+    </p>
+    <script src="../bin/kinect2-socket.js"></script>
+    <script>
+      var tracker = new ks.Tracker
+      tracker.addListener('user_in',  onKinectUserIn);
+      tracker.addListener('user_out', onKinectUserOut);
+
+      var kinectProxy = new ks.Playback(tracker);
+      kinectProxy.play('../extras/data/dance_leave_enter.json.gz', 30);
+
+      // var kinectProxy = new ks.SocketStream(tracker);
+      // kinectProxy.connect("ws://192.168.0.40:9092");
+
+      var ksview = new ks.DebugView(tracker);
+      ksview.proxy = kinectProxy;
+      ksview.canvas.style.position = 'absolute';
+      ksview.canvas.style.right = '0';
+      ksview.canvas.style.bottom = '-30px';
+      document.body.appendChild(ksview.canvas);
+
+
+      var bodies = [];
+      var canvas = document.getElementById('view');
+      var ctx = canvas.getContext('2d');
+
+      resize();
+      window.addEventListener('resize', resize, false);
+
+      function onKinectUserIn(event) {
+        console.log('> user in ' + event.body.id);
+        bodies.push(event.body);
+      }
+
+      function onKinectUserOut(event) {
+        console.log('< user out ' + event.body.id);
+        bodies.splice(bodies.indexOf(event.body),1);
+      }
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        var scale = canvas.width*0.3;
+
+        ctx.save()
+        ctx.translate(canvas.width*0.5, canvas.height*0.5);
+        for (var b of bodies) {
+          renderBody(b, scale);
+        }
+        ctx.restore();
+      }
+
+      function renderBody(body, scale) {
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'black';
+
+        ctx.beginPath();
+        for (var k in ks.BoneType) {
+          var bone = ks.BoneType[k];
+          j1 = body.joints[bone[0]];
+          j2 = body.joints[bone[1]];
+          ctx.moveTo(j1.x * scale, j1.y * scale);
+          ctx.lineTo(j2.x * scale, j2.y * scale);
+        }
+        ctx.stroke();
+      }
+
+      function update(timestamp) {
+          render();
+          ksview.render();
+          window.requestAnimationFrame(update);
+      }
+
+      window.requestAnimationFrame(update);
+    </script>
+  </body>
+</html>

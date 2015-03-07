@@ -1,0 +1,29 @@
+{
+  "name": "kinect2-socket-client",
+  "version": "0.0.1",
+  "description": "a kinect2-socket client library for browser/nodejs",
+  "main": "lib/kinect2-socket.js",
+  "scripts": {
+    "test": "cake test"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": {
+    "name": "Cyril Diagne"
+  },
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": "~1.7.1",
+    "fs-extra": "0.11.0",
+    "browserify": "5.10.0",
+    "uglify-js": "2.4.15",
+    "mocha": "1.21.4",
+    "should": "4.0.4",
+    "which": ""
+  }
+}
