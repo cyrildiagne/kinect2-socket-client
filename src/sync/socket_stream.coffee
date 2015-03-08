@@ -33,6 +33,7 @@ class SocketStream
     console.log 'recording started'
 
   stopRecord : (filename, bCompress=true) ->
+    filename += ".json"
     if @isRecording
       output = JSON.stringify
         version : '0.3'
@@ -52,7 +53,7 @@ class SocketStream
     @isRecording = false
     console.log 'recording stopped'
 
-  toggleRecord : (filename = "default.json") ->
+  toggleRecord : (filename = "default") ->
     if @isRecording
       @stopRecord filename
     else @startRecord()

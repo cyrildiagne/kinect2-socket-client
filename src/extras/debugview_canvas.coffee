@@ -70,11 +70,30 @@ class DebugView
     return
 
   addControls : ->
-    @canvas.addEventListener 'click', (ev) =>
+
+    window.addEventListener 'mouseup', (ev) =>
+      window.removeEventListener 'mousemove', @timelineDragged
+
+    @canvas.addEventListener 'mousedown', (ev) =>
       if @proxy instanceof Playback
-        @proxy.togglePlay()
+        if ev.offsetY > @canvas.height - 40
+          window.addEventListener 'mousemove', @timelineDragged
+          @timelineDragged ev
+        else 
+          @proxy.togglePlay()
       else
-        @proxy.toggleRecord()
+        filename = null
+        if @proxy.isRecording
+          filename = prompt "Playback file name :", ""
+        @proxy.toggleRecord filename
+
+
+  timelineDragged : (e) =>
+
+    x = Math.min(Math.max(0, e.offsetX), @canvas.width)
+    @proxy.currFrame = Math.floor(x / @canvas.width * (@proxy.frames.length-1))
+    @proxy.update()
+      
 
   renderSkeleton : (body) ->
 
@@ -213,7 +232,10 @@ class DebugView
     c.save()
     action = if @proxy.isRecording then 'RECORDING' else ''
 
-    c.fillStyle = @color
+    if @proxy.isRecording
+      c.fillStyle = 'red'
+    else
+      c.fillStyle = @color
     c.font = '8px sans-serif'
     c.fillText 'STREAM :  '+action, 5, ch-h-18
     c.fillStyle = @colorActive
